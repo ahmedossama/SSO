@@ -1,3 +1,12 @@
-<p>
-  login works!
-</p>
+<div class="login-box">
+  <h2>SSO Vodafone</h2>
+  <form [formGroup]="form" (ngSubmit)="sendEmail(form.controls.emailField.value)" novalidate>
+    <div class="form-group">
+      <label for="">Email Address</label>
+      <input type="email" placeholder="enter your email address " formControlName="emailField" class="form-control">
+    </div>
+
+    <button class="btn  btn-primary" [disabled]="!form.valid " type="submit">Send Email</button>
+
+  </form>
+</div>
