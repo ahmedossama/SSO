@@ -14,8 +14,8 @@ var email = require("emailjs");
 
 var randomNo;
 var userData;
-var yourEmail = 'lobna.ali14@gmail.com';
-var yourPwd = 'fouadfayrouz14*';
+var yourEmail = 'sso.vodafone@gmail.com';
+var yourPwd = 'sso_vodafone';
 var yourSmtp = 'smtp.gmail.com';
 var smtpServer = email.server.connect({
     user: yourEmail,
@@ -108,14 +108,13 @@ apiRoutes.post('/authenticate', function (req, res) {
                             "<span style='color: #4169E1'>" + randomNo + "</span></p>", alternative: true
                         }]
                 }, function (err, message) {
-                    console.log(err || message);
-
+                    if(err) throw err ;
+                    res.json({
+                        message: 'check your mail'
+                    });
                 });
             });
-            res.json({
-                success: true,
-                message: 'check your email for one time password'
-            });
+
 
         }
 
@@ -132,6 +131,11 @@ apiRoutes.post('/Confirmation', function (req, res) {
             success: true,
             message: 'Enjoy your token!',
             token: token
+        });
+    }else{
+         res.status(401).send({
+            success: false,
+            message: 'error password.'
         });
     }
 
