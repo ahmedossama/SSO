@@ -9,10 +9,16 @@
   "author": "osama | lobna | samir",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.70.0",
     "body-parser": "^1.17.2",
+    "emailjs": "^1.0.10",
     "express": "^4.15.3",
     "jsonwebtoken": "^7.4.1",
+    "mailjs": "^0.1.18",
     "mongoose": "^4.10.6",
-    "morgan": "^1.8.2"
+    "morgan": "^1.8.2",
+    "node-random": "^1.0.1",
+    "nodemailer": "^4.0.1",
+    "smtp-server": "^3.0.1"
   }
 }
