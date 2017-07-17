@@ -4,39 +4,38 @@ import { Http, Headers, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
-
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-password-temp',
+  templateUrl: './password-temp.component.html',
+  styleUrls: ['../login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class PasswordTempComponent implements OnInit {
   private form: FormGroup;
-  private email: string = "";
+  private password: number = null;
+  private token;
   constructor(private fb: FormBuilder, private http: Http, private router: Router) { }
 
   ngOnInit() {
-
     this.form = this.fb.group({
-      emailField: this.email
+      password: this.password
     });
   }
-  sendEmail(email: string) {
+
+  sendEmail(password: number) {
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: headers });
-    let body = { email: email };
-    return this.http.post('http://localhost:8080/api/authenticate', body, options).map(response => {
-      console.log(response.json());
-
-    }).subscribe(() => {
-
-      this.router.navigate(['/password']);
-
-    }
-
-      );
+    let body = { ontimePass: password };
+    return this.http.post('http://localhost:8080/api/Confirmation', body, options).map(response => {
+      this.token = response.json();
+    },
+    error =>{
+      console.log("errorrrrrrrrrrrrrrrrrrrrrr")
+    }).subscribe(
+      (response) => {
+        console.log(response)
+      });
 
   }
 
