@@ -29,6 +29,7 @@ export class PasswordTempComponent implements OnInit {
     let body = { ontimePass: password };
     return this.http.post('http://localhost:8080/api/Confirmation', body, options).map(response => {
       this.token = response.json();
+      console.log(this.token)
     },
     error =>{
       console.log("errorrrrrrrrrrrrrrrrrrrrrr")

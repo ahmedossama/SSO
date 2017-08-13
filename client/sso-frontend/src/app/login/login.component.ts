@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
     let options = new RequestOptions({ headers: headers });
     let body = { email: email };
     return this.http.post('http://localhost:8080/api/authenticate', body, options).map(response => {
+      debugger
       console.log(response.json());
 
     }).subscribe(() => {

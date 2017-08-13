@@ -123,7 +123,8 @@ apiRoutes.post('/authenticate', function (req, res) {
 });
 apiRoutes.post('/Confirmation', function (req, res) {
     // find the user
-
+console.log(randomNo);
+console.log(req.body.ontimePass)
     if (randomNo == req.body.ontimePass) {
         var token = jwt.sign(userData, app.get('superSecret'), { expiresIn: 1440 });
 
