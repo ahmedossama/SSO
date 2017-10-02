@@ -9,8 +9,11 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config = require('./config.js'); // get our config file
 var User = require('./models/user.js'); // get our mongoose model
-var random = require("node-random");
 var email = require("emailjs");
+var Random = require("random-js");
+var databaseManager = require('./dao/dataBaseManager.js')
+
+
 
 var randomNo;
 var userData;
@@ -51,7 +54,7 @@ app.get('/setup', function (req, res) {
 
     // create a sample user
     var nick = new User({
-        name: 'lobna.ali14@gmail.com',
+        email: 'lobna.ali14@gmail.com',
         password: 'test',
         admin: true
     });
@@ -78,23 +81,13 @@ var apiRoutes = express.Router();
 apiRoutes.post('/authenticate', function (req, res) {
     // find the user
     var email = req.body.email
-    User.findOne({
-        name: req.body.email
-    }, function (err, user) {
-
-        if (err) throw err;
-
-        if (!user) {
-            res.json({ success: false, message: 'Authentication failed. User not found.' + req.body.name });
-        } else if (user) {
+    databaseManager.getUser(email).then((user) => {
+        if (user) {
             userData = user
-            random.numbers({
-                "number": 1,
-                "minimum": 0,
-                "maximum": 1000000
-            }, function (error, data) {
-                if (error) throw error;
-                randomNo = data;
+            var random = Random.engines.mt19937().autoSeed();
+            var temp = random.integer(1, 10000);
+            if (temp) {
+                databaseManager.setPassword(email, temp);
                 smtpServer.send({
                     html: 'Hello!\nYou can now access your account with the following one time password:' +
                     randomNo
@@ -109,38 +102,40 @@ apiRoutes.post('/authenticate', function (req, res) {
                             "<span style='color: #4169E1'>" + randomNo + "</span></p>", alternative: true
                         }]
                 }, function (err, message) {
-                    if(err) throw err ;
+                    if (err) throw err;
                     res.json({
                         message: 'check your mail'
                     });
                 });
-            });
-
+            }
 
         }
-
-    });
+    }, (err) => {
+        if (err) throw err;
+        res.json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
+    })
 });
 apiRoutes.post('/Confirmation', function (req, res) {
     // find the user
-console.log(randomNo);
-console.log(req.body.ontimePass)
-    if (randomNo == req.body.ontimePass) {
-        var token = jwt.sign(userData, app.get('superSecret'), { expiresIn: 1440 });
+    databaseManager.getPassword(req.body.email).then(tempPass => {
 
-        // return the information including token as JSON
-        res.json({
-            success: true,
-            message: 'Enjoy your token!',
-            token: token
-        });
-    }else{
-         res.status(401).send({
-            success: false,
-            message: 'error password.'
-        });
-    }
 
+        if (tempPass == req.body.ontimePass) {
+            var token = jwt.sign(userData, app.get('superSecret'), { expiresIn: 1440 });
+
+            // return the information including token as JSON
+            res.json({
+                success: true,
+                message: 'Enjoy your token!',
+                token: token
+            });
+        } else {
+            res.status(401).send({
+                success: false,
+                message: 'error password.'
+            });
+        }
+    })
 });
 //  var token = jwt.sign(user, app.get('superSecret'),{expiresIn : 1440});
 
@@ -205,3 +200,13 @@ app.use('/api', apiRoutes);
 app.listen(port);
 console.log('Magic happens at http://localhost:' + port);
 
+// databaseManager.getPassword('lobna.ali14@gmail.com').then(res => {
+//     console.log(res)
+// })
+
+
+
+// databaseManager.getUser('lobna.ali14@gmail.com').then((res)=>{
+//     // console.log(res);
+// })
+// databaseManager.setPassword('lobna.ali14@gmail.com', '123456789').then(res=> console.log(res));

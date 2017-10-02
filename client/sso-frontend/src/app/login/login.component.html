@@ -16,13 +16,13 @@
  <h2 class="center" style="text-align:center ; margin-top: 8%;
     font-weight: 700;
     letter-spacing: 6px;">Vodafone SSO</h2><button id="findpass">Enter your email?</button>
-<div class="form">
+<div class="form" style="height: 200px">
   <div class="forceColor"></div>
-  <div class="topbar">
+  <div class="topbar" style="margin-top: 10%;">
     <div class="spanColor"></div>
       <form [formGroup]="form" (ngSubmit)="sendEmail(form.controls.emailField.value)" novalidate>
     <input type="email" class="input" id="password" formControlName="emailField" placeholder="Email"/>
-     <button class="submit" id="submit" type="sumbit" >Send Email</button>
+     <button style="background-color: darksalmon" class="submit" id="submit" type="sumbit" >Send Email</button>
       </form>
   </div>
  
