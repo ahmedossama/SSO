@@ -47,34 +47,45 @@ module.exports = function (app) {
         // find the user
         var email = req.body.email
         databaseManager.getUser(email).then((user) => {
+            console.log("got user", user)
             if (user) {
-                userData = user
+                console.log("log datamanager");
+                    console.log(databaseManager);
                 var random = Random.engines.mt19937().autoSeed();
-                var temp = random.integer(1, 10000);
-                if (temp) {
-                    databaseManager.setPassword(email, temp);
-                    smtpServer.send({
-                        html: 'Hello!\nYou can now access your account with the following one time password:' +
-                        random,
-                        from: yourEmail,
-                        to: email,
-                        subject: 'one time password for access',
-                        attachment:
-                        [
-                            {
-                                data: "<p>Hello!\nYou can now access your account with the following one time password: " +
-                                "<span style='color: #4169E1'>" + random + "</span></p>", alternative: true
-                            }]
-                    }, function (err, message) {
-                        if (err) throw err;
-                        res.json({
-                            message: 'check your mail'
+                console.log("random", random);
+                if (true) {
+                    databaseManager.setPassword(email, random).then((user) => {
+                        
+                        res.send({
+                            success: true,
+                            message: 'Enjoy your token!',
+                            user: user
                         });
                     });
+                    // smtpServer.send({
+                    //     html: 'Hello!\nYou can now access your account with the following one time password:' +
+                    //     random,
+                    //     from: yourEmail,
+                    //     to: email,
+                    //     subject: 'one time password for access',
+                    //     attachment:
+                    //     [
+                    //         {
+                    //             data: "<p>Hello!\nYou can now access your account with the following one time password: " +
+                    //             "<span style='color: #4169E1'>" + random + "</span></p>", alternative: true
+                    //         }]
+                    // }, function (err, message) {
+                    //     if (err) throw err;
+                    //     res.json({
+                    //         message: 'check your mail'
+                    //     });
+                    // });
                 }
 
             }
         }, (err) => {
+            console.log(err);
+
             if (err) throw err;
             res.json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
         })
@@ -119,3 +130,7 @@ module.exports = function (app) {
     // apply the routes to our application with the prefix /api
     app.use('/api', apiRoutes);
 }
+
+        databaseManager.setPassword("lobna.ali14@gmail.com",999999999).then((user) => {
+            console.log(user)
+        });

@@ -23,7 +23,12 @@ app.use(bodyParser.json());
 
 // use morgan to log requests to the console
 app.use(morgan('dev'));
+process.on('uncaughtException', function (err) {
+    console.log("General error triggered");
+  console.log(err);
+})
 
+// throw new Error("Can't divide by zero")
 
 
 

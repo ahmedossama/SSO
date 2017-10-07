@@ -6,4 +6,6 @@ module.exports = mongoose.model('User', new Schema({
     email: String, 
     password: String, 
     admin: Boolean 
+},{
+    collection: 'users'
 }));

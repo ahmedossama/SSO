@@ -17,7 +17,6 @@
     "mailjs": "^0.1.18",
     "mongoose": "^4.10.6",
     "morgan": "^1.8.2",
-    "node-random": "^1.0.1",
     "nodemailer": "^4.0.1",
     "random-js": "^1.0.8",
     "smtp-server": "^3.0.1"

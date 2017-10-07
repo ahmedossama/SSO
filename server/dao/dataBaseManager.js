@@ -11,6 +11,8 @@ function getUser(email) {
 }
 
 function setPassword(email, password) {
+    console.log("email",email);
+    console.log("password",password);
   return User.findOneAndUpdate({email: email}, {$set:{password: password}}, {new: true}).exec();
 }
 function getPassword(email) {
