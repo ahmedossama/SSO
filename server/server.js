@@ -5,7 +5,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
-
 var config = require('./config.js'); // get our config file
 
 
@@ -39,13 +38,3 @@ app.listen(port);
 require('./routes/routes.js')(app)
 console.log('Magic happens at http://localhost:' + port);
 
-// databaseManager.getPassword('lobna.ali14@gmail.com').then(res => {
-//     console.log(res)
-// })
-
-
-
-// databaseManager.getUser('lobna.ali14@gmail.com').then((res)=>{
-//     // console.log(res);
-// })
-// databaseManager.setPassword('lobna.ali14@gmail.com', '123456789').then(res=> console.log(res));

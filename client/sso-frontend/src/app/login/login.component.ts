@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
 
     }).subscribe(() => {
 
-      this.router.navigate(['/password']);
+      this.router.navigate(['/password', {email: email}],{ skipLocationChange: true });
 
     }
 

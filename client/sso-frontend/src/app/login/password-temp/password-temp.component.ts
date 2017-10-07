@@ -4,6 +4,8 @@ import { Http, Headers, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-password-temp',
   templateUrl: './password-temp.component.html',
@@ -13,12 +15,18 @@ export class PasswordTempComponent implements OnInit {
   private form: FormGroup;
   private password: number = null;
   private token;
-  constructor(private fb: FormBuilder, private http: Http, private router: Router) { }
+    private email: string;
+
+  constructor(private fb: FormBuilder, private http: Http, private router: Router, private route :ActivatedRoute) {
+   }
 
   ngOnInit() {
     this.form = this.fb.group({
       password: this.password
     });
+     this.route.params.subscribe(params => {
+       this.email = params['email'];
+     })
   }
 
   sendEmail(password: number) {
@@ -26,8 +34,8 @@ export class PasswordTempComponent implements OnInit {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: headers });
-    let body = { ontimePass: password };
-    return this.http.post('http://localhost:8080/api/Confirmation', body, options).map(response => {
+    let body = { ontimePass: password , email: this.email};
+    return this.http.post('http://localhost:8000/api/Confirmation', body, options).map(response => {
       this.token = response.json();
       console.log(this.token)
     },

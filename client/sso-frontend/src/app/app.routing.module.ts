@@ -8,7 +8,7 @@ import { Routes, RouterModule } from '@angular/router';
 // import { AccountManagementComponent } from "./account-management/account-management.component";
 
 const routes: Routes = [
-            { path: 'login', component: LoginComponent },
+            { path: 'SSO', component: LoginComponent },
             {path: 'password',component: PasswordTempComponent}
 ];
 
