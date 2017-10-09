@@ -31,23 +31,30 @@ module.exports = function (app) {
     apiRoutes.post('/authenticate', function (req, res) {
         // find the user
         var email = req.body.email
-        
+
         databaseManager.getUser(email).then((user) => {
-            
+
             if (user) {
                 var random = new Random(Random.engines.mt19937().autoSeed());
                 var tempPass = random.integer(1, 100000);
                 databaseManager.setPassword(email, tempPass).then((user) => {
-                    databaseManager.sendMail(email, tempPass).then(function (data) {
+                    databaseManager.sendMail(email, tempPass).then((data) => {
+                        delete user.password;
                         res.json({ user: user, message: 'check your email' });
                     });
+                }).catch(err => {
+                    console.log("error setting password for user", err)
+                    res.status(500).json({ success: false, message: 'Internal server error occured while setting password for the user' });
                 });
             } else {
                 res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
 
             }
         }, (err) => {
-            res.json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
+            res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
+        }).catch(err => {
+            res.status(500).json({ success: false, message: 'Internal server error occured while getting user' });
+            console.log("error getting the user", err)
         })
     });
     apiRoutes.post('/Confirmation', function (req, res) {
