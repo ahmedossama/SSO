@@ -31,7 +31,9 @@ module.exports = function (app) {
     apiRoutes.post('/authenticate', function (req, res) {
         // find the user
         var email = req.body.email
+        
         databaseManager.getUser(email).then((user) => {
+            
             if (user) {
                 var random = new Random(Random.engines.mt19937().autoSeed());
                 var tempPass = random.integer(1, 100000);
@@ -40,21 +42,24 @@ module.exports = function (app) {
                         res.json({ user: user, message: 'check your email' });
                     });
                 });
+            } else {
+                res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
+
             }
         }, (err) => {
-            if (err) throw err;
             res.json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
         })
     });
     apiRoutes.post('/Confirmation', function (req, res) {
         // find the user
-                var email = req.body.email;
+        var email = req.body.email;
         databaseManager.getUser(email).then(user => {
-          if (user.password == req.body.ontimePass) {
+            if (user.password == req.body.ontimePass) {
                 var token = jwt.sign({ user: user }, app.get('superSecret'), { expiresIn: 1440 });
                 // var data = jwt.verify(token, app.get('superSecret'));
                 res.status(200).send({
-                    success: true
+                    success: true,
+                    token: token
                 });
 
             } else {

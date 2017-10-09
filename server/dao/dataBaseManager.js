@@ -34,7 +34,7 @@ function sendMail(email, random) {
     };
     return smtpServer(options)
         .then(function (info) { return info })   // if successful
-        .catch(function (err) { console.log('got error'); return err });
+        .catch(function (err) { console.log('got error', err); return err });
 }
 function getPassword(email) {
     return User.findOne({ email: email }).exec().then(user => {
