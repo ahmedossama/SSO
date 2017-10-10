@@ -6,8 +6,10 @@ var User = require('../models/user.js'); // get our mongoose model
 var express = require('express');
 var Random = require("random-js");
 var databaseManager = require('../dao/dataBaseManager.js')
+var userSrv = require('../services/user.service')
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var app = express();
+var cookieParser = require('cookie-parser')
 
 //==============================================
 
@@ -38,7 +40,7 @@ module.exports = function (app) {
                 var random = new Random(Random.engines.mt19937().autoSeed());
                 var tempPass = random.integer(1, 100000);
                 databaseManager.setPassword(email, tempPass).then((user) => {
-                    databaseManager.sendMail(email, tempPass).then(function (data) {
+                    userSrv.sendMail(email, tempPass).then(function (data) {
                         res.json({ user: user, message: 'check your email' });
                     });
                 });
@@ -86,7 +88,7 @@ module.exports = function (app) {
 
     // apply the routes to our application with the prefix /api
     app.use('/api', apiRoutes);
-
+    app.use(cookieParser());
 }
 
 // databaseManager.getPassword("lobna.ali14@gmail.com").then((user) => {
