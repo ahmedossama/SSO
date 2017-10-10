@@ -9,13 +9,15 @@ var databaseManager = require('../dao/dataBaseManager.js')
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var app = express();
 
-//==============================================
 
-
-
-var userData;
-//===============================================
 module.exports = function (app) {
+
+    app.all('/*', function (req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+        res.header("Access-Control-Allow-Methods", "GET, POST", "PUT");
+        next();
+    });
 
     app.get('/', function (req, res) {
         res.send('Hello! The API is at http://localhost:' + '8000' + '/api');
@@ -33,8 +35,6 @@ module.exports = function (app) {
         var email = req.body.email
 
         databaseManager.getUser(email).then((user) => {
-
-            if (user) {
                 var random = new Random(Random.engines.mt19937().autoSeed());
                 var tempPass = random.integer(1, 100000);
                 databaseManager.setPassword(email, tempPass).then((user) => {
@@ -46,10 +46,7 @@ module.exports = function (app) {
                     console.log("error setting password for user", err)
                     res.status(500).json({ success: false, message: 'Internal server error occured while setting password for the user' });
                 });
-            } else {
-                res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
-
-            }
+           
         }, (err) => {
             res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
         }).catch(err => {
@@ -61,13 +58,19 @@ module.exports = function (app) {
         // find the user
         var email = req.body.email;
         databaseManager.getUser(email).then(user => {
+            if (!user) {
+                res.status(400).json({ success: false, message: 'Authentication failed. User not found.)' });
+                return;
+            }
+            delete user.password;
             if (user.password == req.body.ontimePass) {
                 var token = jwt.sign({ user: user }, app.get('superSecret'), { expiresIn: 1440 });
                 // var data = jwt.verify(token, app.get('superSecret'));
-                res.status(200).send({
+                res.status(200).cookie("authCookie", token, { maxAge: 1440 });
+                res.json({
                     success: true,
-                    token: token
-                });
+                    message: "user successfully authenticated"
+                })
 
             } else {
                 res.status(401).send({
