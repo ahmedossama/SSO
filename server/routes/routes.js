@@ -92,7 +92,6 @@ module.exports = function (app) {
 
     // apply the routes to our application with the prefix /api
     app.use('/api', apiRoutes);
-    app.use();
 }
 
 // databaseManager.getPassword("lobna.ali14@gmail.com").then((user) => {
