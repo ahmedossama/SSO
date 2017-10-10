@@ -9,14 +9,10 @@ var databaseManager = require('../dao/dataBaseManager.js')
 var userSrv = require('../services/user.service')
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var app = express();
-var cookieParser = require('cookie-parser')
 
 //==============================================
 
 
-
-var userData;
-//===============================================
 module.exports = function (app) {
 
     app.get('/', function (req, res) {
@@ -33,23 +29,31 @@ module.exports = function (app) {
     apiRoutes.post('/authenticate', function (req, res) {
         // find the user
         var email = req.body.email
-        
+
         databaseManager.getUser(email).then((user) => {
-            
+
             if (user) {
                 var random = new Random(Random.engines.mt19937().autoSeed());
                 var tempPass = random.integer(1, 100000);
                 databaseManager.setPassword(email, tempPass).then((user) => {
+                                            delete user.password;
                     userSrv.sendMail(email, tempPass).then(function (data) {
+
                         res.json({ user: user, message: 'check your email' });
                     });
+                }).catch(err => {
+                    console.log("error setting password for user", err)
+                    res.status(500).json({ success: false, message: 'Internal server error occured while setting password for the user' });
                 });
             } else {
                 res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
 
             }
         }, (err) => {
-            res.json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
+            res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
+        }).catch(err => {
+            res.status(500).json({ success: false, message: 'Internal server error occured while getting user' });
+            console.log("error getting the user", err)
         })
     });
     apiRoutes.post('/Confirmation', function (req, res) {
@@ -88,7 +92,7 @@ module.exports = function (app) {
 
     // apply the routes to our application with the prefix /api
     app.use('/api', apiRoutes);
-    app.use(cookieParser());
+    app.use();
 }
 
 // databaseManager.getPassword("lobna.ali14@gmail.com").then((user) => {
