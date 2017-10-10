@@ -29,25 +29,28 @@ module.exports = function (app) {
     // get an instance of the router for api routes
     var apiRoutes = express.Router();
 
-    // TODO: route to authenticate a user (POST http://localhost:8080/api/authenticate)
+    // TODO: route to authenticate a user (POST http://localhost:8000/api/authenticate)
     apiRoutes.post('/authenticate', function (req, res) {
         // find the user
         var email = req.body.email
 
         databaseManager.getUser(email).then((user) => {
-                var random = new Random(Random.engines.mt19937().autoSeed());
-                var tempPass = random.integer(1, 100000);
-                databaseManager.setPassword(email, tempPass).then((user) => {
-                                            delete user.password;
-                    userSrv.sendMail(email, tempPass).then(function (data) {
-
-                        res.json({ user: user, message: 'check your email' });
-                    });
-                }).catch(err => {
-                    console.log("error setting password for user", err)
-                    res.status(500).json({ success: false, message: 'Internal server error occured while setting password for the user' });
+            var random = new Random(Random.engines.mt19937().autoSeed());
+            var tempPass = random.integer(1, 100000);
+            databaseManager.setPassword(email, tempPass).then((user) => {
+                userSrv.sendMail(email, tempPass).then(function (data) {
+                    if (data.success) {
+                        delete user.password;
+                        res.status(200).json({ user: user, message: 'check your email' });
+                    } else {
+                        res.status(500).json({ success: false, message: 'internal server error while sending email'});
+                    }
                 });
-           
+            }).catch(err => {
+                console.log("error setting password for user", err)
+                res.status(500).json({ success: false, message: 'Internal server error occured while setting password for the user' });
+            });
+
         }, (err) => {
             res.status(401).json({ success: false, message: 'Authentication failed. User not found.' + req.body.email });
         }).catch(err => {

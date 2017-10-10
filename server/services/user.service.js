@@ -20,8 +20,8 @@ function sendMail(email, random) {
         "<span style='color: #4169E1'>" + random + "</span></p>"
     };
     return smtpServer(options)
-        .then(function (info) { return info })   // if successful
-        .catch(function (err) { console.log('got error', err); return err });
+        .then(function (info) { return {success:true, info : info}  })   // if successful
+        .catch(function (err) { console.log('got error', err); return {success:false, err : err} });
 }
 
 module.exports = {
