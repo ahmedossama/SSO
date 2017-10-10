@@ -2,6 +2,7 @@
 Single Sign On App
 
 on the origin root run ==> npm install
+
 download mongodb https://www.mongodb.com/download-center#community and run the .exe or .msi file
 
 to run mongod got to C:\Program Files\MongoDB\Server\3.4\bin and run command ==> mongod
