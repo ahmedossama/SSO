@@ -38,3 +38,14 @@ app.listen(port);
 require('./routes/routes.js')(app)
 console.log('Magic happens at http://localhost:' + port);
 
+
+
+//test
+// var databaseManager = require('./dao/dataBaseManager.js')
+
+
+// databaseManager.getUser('lobna.ali14@gmail.com').then(res=>{
+//   databaseManager.getRoleByUser(res._id).then(role =>{
+//     console.log(role)
+//   })
+// })
