@@ -29,7 +29,7 @@ module.exports = function (app) {
     // get an instance of the router for api routes
     var apiRoutes = express.Router();
 
-    // TODO: route to authenticate a user (POST http://localhost:8080/api/authenticate)
+    // TODO: route to authenticate a user (POST http://localhost:8000/api/authenticate)
     apiRoutes.post('/authenticate', function (req, res) {
         // find the user
         var email = req.body.email
@@ -46,6 +46,7 @@ module.exports = function (app) {
                 userSrv.sendMail(email, tempPass).then((data) => {
 
                     res.json({ user: user, message: 'check your email' });
+
                 });
             }).catch(err => {
                 console.log("error setting password for user", err)
@@ -185,7 +186,6 @@ module.exports = function (app) {
 
     // apply the routes to our application with the prefix /api
     app.use('/api', apiRoutes);
-
 }
 
 // databaseManager.getPassword("lobna.ali14@gmail.com").then((user) => {
