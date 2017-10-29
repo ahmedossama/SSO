@@ -9,7 +9,7 @@ var databaseManager = require('../dao/dataBaseManager.js')
 var userSrv = require('../services/user.service')
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var app = express();
-
+var utils = require('../utils/helper-utils.js')
 module.exports = function (app) {
 
     app.all('/*', function (req, res, next) {
@@ -78,13 +78,15 @@ module.exports = function (app) {
                 res.status(400).json({ success: false, message: 'Authentication failed. User not found.)' });
                 return;
             }
-            delete user.password;
-            delete user.authToken;
+            // delete user.password;
+            // delete user.authToken;
+            console.log(user.password)
+            console.log(req.body.ontimePass)
             if (user.password == req.body.ontimePass) {
-                var token = jwt.sign({ user: user }, app.get('superSecret'), { expiresIn: 1440 });
+                var token = jwt.sign({ user: user }, app.get('superSecret'),{ expiresIn: "14d" } );
                 // var data = jwt.verify(token, app.get('superSecret'));
                 databaseManager.setUserToken(user._id, token).then(() => {
-                    res.status(200).cookie("SSOC", token, { maxAge: 1440 });
+                    res.status(200).cookie("SSOC", token);
                     res.json({
                         success: true,
                         message: "user successfully authenticated"
@@ -143,12 +145,17 @@ module.exports = function (app) {
     })
 
     apiRoutes.post('/verifyToken', function (req, res) {
-        let token = req.body.authToken;
-        let decodedToken = jwt.decode(token);
+        // let token = req.body.authToken;
+        // console.log(req.headers.cookie)
+        let token = utils.getCookieData(req.headers.cookie);
+        let decodedToken = jwt.verify(token, app.get('superSecret'));
+        console.log(decodedToken)
         let dateNow = new Date();
-        console.log(dateNow.getTime())
-        console.log(decodedToken.exp)
-        if (decodedToken.exp < dateNow.getTime()) {
+        let tokenExpDate =  new Date(decodedToken.exp)
+       
+       console.log(tokenExpDate.getTime()*1000)
+       console.log(dateNow.getTime())
+        if ((tokenExpDate.getTime()* 1000 )< dateNow.getTime()) {
             res.status(401).json({
                 valid: false,
                 success: false,

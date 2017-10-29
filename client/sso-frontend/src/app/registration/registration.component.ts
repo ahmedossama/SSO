@@ -19,7 +19,6 @@ export class RegistrationComponent implements OnInit {
   constructor(private fb: FormBuilder, private http: Http, private router: Router) { }
 
   ngOnInit() {
-    debugger
     this.form = this.fb.group({
       email: this.email,
       staffId: this.staffId,
@@ -29,13 +28,18 @@ export class RegistrationComponent implements OnInit {
   }
 
   register(email, userName, staffId) {
-        let headers = new Headers();
+    let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: headers });
 
-    var body={email:email, userName: userName, staffId: staffId}
-    return this.http.post('http://localhost:8000/api/registration',body, options).map(response => {
+    var body = { email: email, userName: userName, staffId: staffId }
+    return this.http.post('http://localhost:8000/api/registration', body, options).map(response => {
       console.log(response.json())
-    }).subscribe(() => { })
+
+    }).subscribe(() => {
+      this.email = "";
+      this.userName = "";
+      this.staffId = null;
+    })
   }
 }
