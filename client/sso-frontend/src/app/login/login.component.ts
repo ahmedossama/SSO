@@ -3,7 +3,8 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Http, Headers, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { AuthService } from 'app/shared/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,11 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   private form: FormGroup;
   private email: string = "";
-  constructor(private fb: FormBuilder, private http: Http, private router: Router) { }
+  constructor(private fb: FormBuilder, private http: Http, private router: Router, private activatedRoute: ActivatedRoute,private authService: AuthService ) {
+    this.activatedRoute.queryParamMap.subscribe((params: Params)=>{
+     this.authService.targetUrl =  params.params['targetUrl'] || null;
+    });
+  }
 
   ngOnInit() {
 
@@ -32,7 +37,7 @@ export class LoginComponent implements OnInit {
 
     }).subscribe(() => {
 
-      this.router.navigate(['/password', {email: email}],{ skipLocationChange: true });
+      this.router.navigate(['/password', { email: email }], { skipLocationChange: true });
 
     }
 
