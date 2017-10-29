@@ -5,6 +5,7 @@ import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'app/shared/auth.service';
 
 @Component({
   selector: 'app-password-temp',
@@ -17,7 +18,7 @@ export class PasswordTempComponent implements OnInit {
   private token;
     private email: string;
 
-  constructor(private fb: FormBuilder, private http: Http, private router: Router, private route :ActivatedRoute) {
+  constructor(private fb: FormBuilder, private http: Http, private router: Router, private route :ActivatedRoute,private authService:AuthService) {
    }
 
   ngOnInit() {
@@ -37,10 +38,11 @@ export class PasswordTempComponent implements OnInit {
     let body = { ontimePass: password , email: this.email};
     return this.http.post('http://localhost:8000/api/Confirmation', body, options).map(response => {
       this.token = response.json();
-      console.log(this.token)
+        console.log('token',this.token);
+        window.location.href = this.authService.targetUrl;
     },
     error =>{
-      console.log("errorrrrrrrrrrrrrrrrrrrrrr")
+      console.log("Error...");
     }).subscribe(
       (response) => {
         console.log(response)
