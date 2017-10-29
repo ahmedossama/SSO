@@ -6,7 +6,7 @@
 <div class="main-content-agile">
   <div class="sub-main-w3">
     <h2>registration</h2>
-    <form [formGroup]="form" (ngSubmit)="register(form.controls.email.value, form.controls.userName.value, form.controls.staffId.value)"
+    <form [formGroup]="form" 
       novalidate>
       <h6>registration with vodafone email</h6>
 
@@ -21,8 +21,8 @@
         <input placeholder="Staff id" name="staffId" type="number" formControlName="staffId" required="">
       </div>
       <div class="clear"></div>
-      <input type="submit" value="register">
     </form>
+      <button (click)="register(form.controls.email.value, form.controls.userName.value, form.controls.staffId.value)" type="submit" [disabled]="!form.valid">Register</button>
   </div>
 </div>
 <!--//main-->

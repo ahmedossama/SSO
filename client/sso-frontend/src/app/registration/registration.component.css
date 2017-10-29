@@ -88,7 +88,7 @@ img{max-width:100%;}
     letter-spacing: 1px;
     font-family: 'Roboto', sans-serif;
 }
-.sub-main-w3 input[type="submit"] {
+.sub-main-w3 button {
     color: #fff;
     background: #34bf49;
     border: none;
@@ -107,9 +107,14 @@ img{max-width:100%;}
     font-family: 'Roboto', sans-serif;
     margin-top: 1.5em;
 }
-.sub-main-w3 input[type="submit"]:hover {
+.sub-main-w3 button:hover {
     background: #ff4c4c;
     color: #fff;
+}
+.sub-main-w3 button:disabled {
+    background: grey;
+    color: #fff;
+    cursor: not-allowed;
 }
 .icon1, .icon2, icon3{
     position: relative;
