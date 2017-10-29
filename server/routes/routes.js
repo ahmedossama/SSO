@@ -28,7 +28,17 @@ module.exports = function (app) {
 
     // get an instance of the router for api routes
     var apiRoutes = express.Router();
+    apiRoutes.post('/registration', function (req, res) {
+        var userData = req.body;
+        databaseManager.insertUser(userData).then(function (data) {
+            if (data.success) {
+                return res.status(200).json({ success: true, message: 'user inserted successfully' })
+            } else {
+                return res.status(401).json({ success: false, message: 'user already exist' })
 
+            }
+        })
+    })
     // TODO: route to authenticate a user (POST http://localhost:8000/api/authenticate)
     apiRoutes.post('/authenticate', function (req, res) {
         // find the user
@@ -156,14 +166,15 @@ module.exports = function (app) {
             } else {
                 res.status(200).json({
                     valid: true
-                    
+
                 })
             }
         }).catch(err => {
-            res.status(500).json({ 
+            res.status(500).json({
                 valid: false,
-                success: false, 
-                message: 'Internal server error occured while setting password for the user' });
+                success: false,
+                message: 'Internal server error occured while setting password for the user'
+            });
 
         })
 

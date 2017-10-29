@@ -2,14 +2,16 @@ import { LoginComponent } from './login/login.component';
 
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
- import { AppComponent } from './app.component';
- import { PasswordTempComponent } from './login/password-temp/password-temp.component'
-
+import { AppComponent } from './app.component';
+import { PasswordTempComponent } from './login/password-temp/password-temp.component'
+import {RegistrationComponent } from './registration/registration.component'
 // import { AccountManagementComponent } from "./account-management/account-management.component";
 
 const routes: Routes = [
-            { path: 'SSO', component: LoginComponent },
-            {path: 'password',component: PasswordTempComponent}
+  { path: 'SSO', component: LoginComponent },
+  { path: 'password', component: PasswordTempComponent },
+  { path: 'registeration', component: RegistrationComponent }
+
 ];
 
 @NgModule({

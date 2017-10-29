@@ -1,0 +1,31 @@
+<div class="header-w3l">
+  <h1>Vodafone SSO</h1>
+</div>
+<!--//header-->
+<!--main-->
+<div class="main-content-agile">
+  <div class="sub-main-w3">
+    <h2>registration</h2>
+    <form [formGroup]="form" (ngSubmit)="register(form.controls.email.value, form.controls.userName.value, form.controls.staffId.value)"
+      novalidate>
+      <h6>registration with vodafone email</h6>
+
+      <div class="icon1">
+        <input placeholder="Email" name="mail" type="email" formControlName="email" required="">
+      </div>
+      <div class="icon1">
+
+        <input placeholder="User name" name="userName" type="string" formControlName="userName" required="">
+      </div>
+      <div class="icon1">
+        <input placeholder="Staff id" name="staffId" type="number" formControlName="staffId" required="">
+      </div>
+      <div class="clear"></div>
+      <input type="submit" value="register">
+    </form>
+  </div>
+</div>
+<!--//main-->
+<div class="footer">
+  <!--<p>© 2017 SSO Sign In Form. All rights reserved</p>-->
+</div>

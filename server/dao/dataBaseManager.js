@@ -11,6 +11,20 @@ function getUser(email) {
     });
 }
 
+function insertUser(userDate) {
+    return User.findOne({ email: userDate.email }).exec().then(user => {
+        console.log(user)
+        if (!user) {
+            return User.findOneAndUpdate({ email: userDate.email }, { $set: { email: userDate.email, username: userDate.userName, staffId: userDate.staffId } }, { upsert: true }).exec().then(data => {
+                return { success: true };
+            });
+        } else {
+            return { success: false };
+
+        }
+    });
+
+}
 function getApp(app_name) {
     return App.findOne({
         name: app_name
@@ -46,8 +60,8 @@ function setUserToken(id, token) {
 
 }
 
-function getUserDataByToken(token){
-    
+function getUserDataByToken(token) {
+
 }
 module.exports = {
     setPassword: setPassword,
@@ -56,7 +70,8 @@ module.exports = {
     getApp: getApp,
     getRoleByUser: getRoleByUser,
     getUserById: getUserById,
-    setUserToken: setUserToken
+    setUserToken: setUserToken,
+    insertUser: insertUser
 
 }
 
