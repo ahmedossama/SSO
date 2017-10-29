@@ -11,18 +11,9 @@ function getUser(email) {
     });
 }
 
-function insertUser(userDate) {
-    return User.findOne({ email: userDate.email }).exec().then(user => {
-        console.log(user)
-        if (!user) {
-            return User.findOneAndUpdate({ email: userDate.email }, { $set: { email: userDate.email, username: userDate.userName, staffId: userDate.staffId } }, { upsert: true }).exec().then(data => {
-                return { success: true };
-            });
-        } else {
-            return { success: false };
+function insertUser(userData) {
 
-        }
-    });
+    return User.create(userData)
 
 }
 function getApp(app_name) {
