@@ -33,7 +33,7 @@ export class RegistrationComponent implements OnInit {
     let options = new RequestOptions({ headers: headers });
 
     var body = { email: email, userName: userName, staffId: staffId }
-    return this.http.post('http://localhost:8000/api/registration', body, options).map(response => {
+    return this.http.post('/api/registration', body, options).map(response => {
       console.log(response.json())
       this.form.reset();
     }).subscribe(() => {
