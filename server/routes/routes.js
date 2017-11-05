@@ -73,10 +73,13 @@ module.exports = function (app) {
             console.log(user.password)
             console.log(req.body.ontimePass)
             if (user.password == req.body.ontimePass) {
-                var token = jwt.sign({ user: user }, app.get('superSecret'),{ expiresIn: "14d" } );
+                var token = jwt.sign({ user: user }, app.get('superSecret'), { expiresIn: "14d" });
                 // var data = jwt.verify(token, app.get('superSecret'));
                 databaseManager.setUserToken(user._id, token).then(() => {
                     res.status(200).cookie("SSOC", token);
+                    // res.cookie("SSOC_VSSE", "token", {
+                    //     domain: '.vsse.org'
+                    // });
                     res.json({
                         success: true,
                         message: "user successfully authenticated"
@@ -127,7 +130,7 @@ module.exports = function (app) {
         let token = req.body.authToken;
         // console.log(token)
         // console.log(jwt.verify(token),app.get('superSecret'))
-        let userData = jwt.decode(token);
+        let userData = jwt.verify(token);
         res.status(200).json({
             userData: userData
         })
@@ -137,15 +140,22 @@ module.exports = function (app) {
     apiRoutes.post('/verifyToken', function (req, res) {
         // let token = req.body.authToken;
         // console.log(req.headers.cookie)
+
+        res.status(200).json({
+                    valid: true,
+                    // user: user
+
+                })
+                return 
         let token = utils.getCookieData(req.headers.cookie);
         let decodedToken = jwt.verify(token, app.get('superSecret'));
         console.log(decodedToken)
         let dateNow = new Date();
-        let tokenExpDate =  new Date(decodedToken.exp)
-       
-       console.log(tokenExpDate.getTime()*1000)
-       console.log(dateNow.getTime())
-        if ((tokenExpDate.getTime()* 1000 )< dateNow.getTime()) {
+        let tokenExpDate = new Date(decodedToken.exp)
+
+        console.log(tokenExpDate.getTime() * 1000)
+        console.log(dateNow.getTime())
+        if ((tokenExpDate.getTime() * 1000) < dateNow.getTime()) {
             res.status(401).json({
                 valid: false,
                 success: false,
@@ -162,30 +172,45 @@ module.exports = function (app) {
                 return;
             } else {
                 res.status(200).json({
-                    valid: true
-                    
+                    valid: true,
+                    user: user
+
                 })
             }
         }).catch(err => {
-            res.status(500).json({ 
+            res.status(500).json({
                 valid: false,
-                success: false, 
-                message: 'Internal server error occured while setting password for the user' });
+                success: false,
+                message: 'Internal server error occured while setting password for the user'
+            });
 
         })
 
 
     })
 
-    //  apiRoutes.post('token/user', function (req, res) {
-    //      console.log("234567890=")
-    //     let token = req.body.token;
-    //     // let userData = jwt.decode(token);
-    //     res.status(200).json({
+    apiRoutes.post('/token/user', function (req, res) {
+        let token = utils.getCookieData(req.headers.cookie);
+        
+        if(!token){
+             res.status(401).json({
+                message: "No Token Found"
+            })
+        }
+        let decodedToken = jwt.verify(token, app.get('superSecret'));
+        // let userData = jwt.decode(token);
+        if (decodedToken) {
+            res.status(200).json({
+                user: decodedToken
+            })
 
-    //     })
-    //     console.log(userData)
-    // })
+        }else { 
+            res.status(401).json({
+                message: "No User Found"
+            })
+        }
+        console.log(userData)
+    })
 
 
 
