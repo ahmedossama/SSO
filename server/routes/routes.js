@@ -132,7 +132,7 @@ module.exports = function (app) {
         }).catch(err => {
             res.status(500).json({ success: false, message: 'Internal server error occured while getting user', error: err });
 
-        })
+        })    
     })
 
     apiRoutes.post('/authToken/user', function (req, res) {
